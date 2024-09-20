@@ -2,7 +2,11 @@
 
 SmartRCA is a tool leveraging Azure OpenAI services to automate the generation of 5 WHYs Root Cause Analysis (RCA), based on ticket details such as case metadata, case notes and communication emails.
 
-Please note that all confidential information has been masked in the code to ensure security and compliance. Example of an RCA output:
+Please note that all confidential information has been masked in the code to ensure security and compliance. 
+
+![SmartRCA_Tool_Preview](./SmartRCA.jpg)
+
+Example of an RCA output:
 
 ### 5 WHYs Root Cause Analysis (RCA) Report
 
@@ -57,3 +61,5 @@ The high CPU usage on the SQL Managed Instance was primarily caused by inefficie
 The high CPU usage issue on customer's SQL Managed Instance was caused by inefficient queries and missing indexes. The problem was mitigated by adding the necessary indexes, clearing cache, and restarting applications. Preventative measures and ongoing monitoring have been put in place to ensure long-term stability and performance.
 
 By following these steps and maintaining close communication with the customer, we can ensure that similar issues are avoided in the future and the SQL Managed Instance operates efficiently.
+
+
