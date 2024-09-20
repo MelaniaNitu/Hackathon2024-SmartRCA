@@ -2,7 +2,9 @@
 
 SmartRCA is a tool leveraging Azure OpenAI services to automate the generation of 5 WHYs Root Cause Analysis (RCA), based on ticket details such as case metadata, case notes and communication emails.
 
-Please note that all confidential information has been masked in the code to ensure security and compliance. 
+# Important Notice
+
+> **Please note that all confidential information has been masked in the code to ensure security and compliance.**
 
 ![SmartRCA_Tool_Preview](./SmartRCA.jpg)
 
