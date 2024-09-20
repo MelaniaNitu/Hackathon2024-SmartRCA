@@ -58,7 +58,7 @@ let
 
     Case_Emails_Summary = FetchGPTResponse("Anonymized case emails:\n\n" & EmailsText & "\n\nContext from previous: " & Case_Notes_Summary),
 
-    RCA = FetchGPTResponse("Generate anonymized 5 WHYs RCA report based on the case information, notes, and emails provided.\n\nContext from previous: " & Case_Info_Summary & Case_Notes_Summary & Case_Emails_Summary),
+    RCA = FetchGPTResponse("Generate 5 WHYs RCA report based on the case information, notes, and emails provided.\n\nContext from previous: " & Case_Info_Summary & Case_Notes_Summary & Case_Emails_Summary),
 
     Output = [
         Case_Info_Summary = Case_Info_Summary,
