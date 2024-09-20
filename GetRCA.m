@@ -1,36 +1,37 @@
 let
-    CaseData = GetAnonymizedCase,
-    CaseNotes = GetAnonymizedCaseNotes,
-    CaseEmails = GetAnonymizedCaseEmails,
+    CaseData = GetCase,
+    CaseNotes = GetCaseNotes,
+    CaseEmails = GetCaseEmails,
 
     FirstRow = Table.First(CaseData),
 
     FormatCaseInfo = (record as record) as text =>
     let
-        AnonymizedAccountName = Record.FieldOrDefault(record, "AccountNameField", "N/A"),
-        AnonymizedCountry = Record.FieldOrDefault(record, "CountryField", "N/A"),
-        AnonymizedTitle = Record.FieldOrDefault(record, "TitleField", "N/A"),
-        AnonymizedTicketNumber = Record.FieldOrDefault(record, "TicketNumberField", "N/A"),
-        AnonymizedSupportAreaPath = Record.FieldOrDefault(record, "SupportAreaPathField", "N/A"),
-        AnonymizedStatus = Record.FieldOrDefault(record, "StatusField", "N/A"),
-        FormattedText = "Account Name: " & AnonymizedAccountName & 
-                        "\nCountry: " & AnonymizedCountry & 
-                        "\nTitle: " & AnonymizedTitle & 
-                        "\nTicket Number: " & AnonymizedTicketNumber & 
-                        "\nSupport Area Path: " & AnonymizedSupportAreaPath & 
-                        "\nStatus: " & AnonymizedStatus
+        AccountName = Record.FieldOrDefault(record, "<account_column>", "N/A"),
+        Country = Record.FieldOrDefault(record, "<country_column>", "N/A"),
+        Title = Record.FieldOrDefault(record, "<title_column>", "N/A"),
+        TicketNumber = Record.FieldOrDefault(record, "<ticket_number_column>", "N/A"),
+        SupportAreaPath = Record.FieldOrDefault(record, "<support_area_column>", "N/A"),
+        Status = Record.FieldOrDefault(record, "<status_column>", "N/A"),
+        
+        FormattedText = "Account Name: " & AccountName & 
+                        "\nCountry: " & Country & 
+                        "\nTitle: " & Title & 
+                        "\nTicket Number: " & TicketNumber & 
+                        "\nSupport Area Path: " & SupportAreaPath & 
+                        "\nStatus: " & Status
     in
         FormattedText,
 
     CaseInfoText = FormatCaseInfo(FirstRow),
 
-    NotesText = Text.Combine(CaseNotes[AnonymizedNoteField], " "),
+    NotesText = Text.Combine(CaseNotes["<note_column>"], " "),
 
-    EmailsText = Text.Combine(CaseEmails[AnonymizedEmailField], " "),
+    EmailsText = Text.Combine(CaseEmails["<email_content_column>"], " "),
 
     FetchGPTResponse = (promptText as text) as text =>
     let
-        Url = "https://api.example.com/openai/deployments/sample/chat/completions?api-version=2024-02-15-preview",
+        Url = "https://<openai_api_url>/openai/deployments/gpt-4o/chat/completions?api-version=2024-02-15-preview",
         Body = Json.FromValue([
             messages = {
                 [ role = "user", content = promptText ]
@@ -42,7 +43,7 @@ let
         Source = Web.Contents(Url, [
             Headers = [
                 #"Content-Type" = "application/json",
-                #"api-key" = "YOUR-API-KEY"
+                #"api-key" = "*" // Replace with your actual API key
             ],
             Content = Body
         ]),
@@ -52,13 +53,13 @@ let
     in
         ResponseText,
 
-    Case_Info_Summary = FetchGPTResponse("Anonymized case information:\n\n" & CaseInfoText),
+    Case_Info_Summary = FetchGPTResponse("Case information:\n\n" & CaseInfoText),
 
-    Case_Notes_Summary = FetchGPTResponse("Anonymized case notes:\n\n" & NotesText & "\n\nContext from previous: " & Case_Info_Summary),
+    Case_Notes_Summary = FetchGPTResponse("Case notes:\n\n" & NotesText & "\n\nContext from previous: " & Case_Info_Summary),
 
-    Case_Emails_Summary = FetchGPTResponse("Anonymized case emails:\n\n" & EmailsText & "\n\nContext from previous: " & Case_Notes_Summary),
+    Case_Emails_Summary = FetchGPTResponse("Case emails:\n\n" & EmailsText & "\n\nContext from previous: " & Case_Notes_Summary),
 
-    RCA = FetchGPTResponse("Generate anonymized 5 WHYs RCA report based on the case information, notes, and emails provided.\n\nContext from previous: " & Case_Info_Summary & Case_Notes_Summary & Case_Emails_Summary),
+    RCA = FetchGPTResponse("Generate 5 WHYs RCA report based on the case information, notes, and emails provided.\n\nContext from previous: " & Case_Info_Summary & Case_Notes_Summary & Case_Emails_Summary),
 
     Output = [
         Case_Info_Summary = Case_Info_Summary,
